@@ -30,7 +30,6 @@ function App() {
                 <Route path="/search-patient" element={<SearchPatient />} />
                 <Route path="/admin-panel" element={<AdminPanel />} />
 
-                {/* Add more routes as needed */}
                 {/* Default route */}
                 <Route path="*" element={<h1>404 Page Not Found</h1>} />
 
