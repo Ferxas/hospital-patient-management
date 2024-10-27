@@ -1,6 +1,7 @@
 // src/pages/Dashboard.jsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { FiSearch, FiUserPlus } from "react-icons/fi"; // Importamos los íconos necesarios
 
 const Dashboard = () => {
     const navigate = useNavigate();
@@ -13,26 +14,42 @@ const Dashboard = () => {
     }, [navigate]);
 
     return (
-        <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
-            <h1 className="text-3xl font-bold mb-6">Welcome to the Dashboard</h1>
-            
+        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
+            <h1 className="text-3xl font-bold text-blue-600 mb-6">Bienvenido</h1>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+                {/* Botón para Buscar paciente */}
+                <div className="flex flex-col items-center bg-white p-6 rounded-lg shadow-lg">
+                    <FiSearch className="w-12 h-12 text-gray-700 mb-4" /> {/* Ícono de búsqueda */}
+                    <button
+                        onClick={() => navigate("/search-patient")}
+                        className="px-6 py-2 bg-green-500 text-white font-bold rounded hover:bg-green-600 transition"
+                    >
+                        Buscar paciente
+                    </button>
+                </div>
+
+                {/* Botón para Registrar paciente */}
+                <div className="flex flex-col items-center bg-white p-6 rounded-lg shadow-lg">
+                    <FiUserPlus className="w-12 h-12 text-gray-700 mb-4" /> {/* Ícono de registro de usuario */}
+                    <button
+                        onClick={() => navigate("/register-patient")}
+                        className="px-6 py-2 bg-green-500 text-white font-bold rounded hover:bg-green-600 transition"
+                    >
+                        Registrar paciente
+                    </button>
+                </div>
+            </div>
+
             {/* Botón para ir al panel de administración, solo visible para administradores */}
             {role === "admin" && (
                 <button
                     onClick={() => navigate("/admin-panel")}
-                    className="px-4 py-2 bg-red-500 text-white rounded mb-4"
+                    className="mb-4 px-4 py-2 bg-red-500 text-white rounded"
                 >
                     Go to Admin Panel
                 </button>
             )}
-
-            {/* Botón para registrar un nuevo paciente, accesible para todos los roles */}
-            <button
-                onClick={() => navigate("/register-patient")}
-                className="px-4 py-2 bg-green-500 text-white rounded mb-4"
-            >
-                Register New Patient
-            </button>
 
             {/* Botón para cerrar sesión */}
             <button
