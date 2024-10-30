@@ -50,8 +50,8 @@ To get started with the Hospital Patient Management System, follow these steps:
    Update the `.env` file with your database credentials and other configurations.
 
 4. **Set Up the Database**:
-   - Create a new database in MySQL (e.g., `hospitalmanagement`).
-   - Run the necessary SQL scripts to set up the required tables (you may need to create these scripts based on your schema).
+   - Create a new database in MySQL (e.g., `hospitalmanagement`) or just import what is in the db folder.
+   
 
 5. **Start the Backend Server**:
    ```bash
