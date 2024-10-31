@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 29, 2024 at 07:26 AM
+-- Generation Time: Oct 31, 2024 at 10:52 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -34,11 +34,12 @@ CREATE TABLE `patients` (
   `first_name` varchar(50) NOT NULL,
   `last_name` varchar(50) NOT NULL,
   `identification_number` varchar(20) NOT NULL,
-  `age` int(11) NOT NULL,
   `document_type` enum('cédula de ciudadanía','tarjeta de identidad') NOT NULL,
   `location` varchar(20) DEFAULT NULL,
   `status` enum('activo','inactivo') DEFAULT 'activo',
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `birth_date` date NOT NULL DEFAULT '1900-01-01',
+  `is_pediatric` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------

@@ -2,11 +2,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../services/authService";
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState(null);
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
@@ -15,9 +16,11 @@ const Login = () => {
             const response = await login(username, password);
             localStorage.setItem("token", response.data.token); // Guardar el token
             localStorage.setItem("role", response.data.role);   // Guardar el rol del usuario
+            toast.success("Login successful!");
             navigate("/dashboard"); // Redirigir al panel general
         } catch (err) {
-            setError("Failed to login. Please check your credentials.");
+            console.error("Failed to login", err);
+            toast.error("Failed to login. Please check your credentials.");
         }
     };
 
@@ -39,7 +42,6 @@ const Login = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     className="w-full mb-4 p-3 border border-gray-300 rounded"
                 />
-                {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
                 <button
                     type="submit"
                     className="w-full p-3 bg-blue-500 text-white font-bold rounded hover:bg-blue-600 transition"

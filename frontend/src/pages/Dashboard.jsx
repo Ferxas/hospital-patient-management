@@ -1,7 +1,9 @@
 // src/pages/Dashboard.jsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiSearch, FiUserPlus } from "react-icons/fi"; // Importamos los íconos necesarios
+import { FiSearch, FiUserPlus } from "react-icons/fi";
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const Dashboard = () => {
     const navigate = useNavigate();
@@ -13,6 +15,13 @@ const Dashboard = () => {
         }
     }, [navigate]);
 
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        toast.success("Logout successful!");
+        navigate("/login");
+    };
+
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
             <h1 className="text-3xl font-bold text-blue-600 mb-6">Bienvenido</h1>
@@ -20,7 +29,7 @@ const Dashboard = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
                 {/* Botón para Buscar paciente */}
                 <div className="flex flex-col items-center bg-white p-6 rounded-lg shadow-lg">
-                    <FiSearch className="w-12 h-12 text-gray-700 mb-4" /> {/* Ícono de búsqueda */}
+                    <FiSearch className="w-12 h-12 text-gray-700 mb-4" />
                     <button
                         onClick={() => navigate("/search-patient")}
                         className="px-6 py-2 bg-green-500 text-white font-bold rounded hover:bg-green-600 transition"
@@ -31,7 +40,7 @@ const Dashboard = () => {
 
                 {/* Botón para Registrar paciente */}
                 <div className="flex flex-col items-center bg-white p-6 rounded-lg shadow-lg">
-                    <FiUserPlus className="w-12 h-12 text-gray-700 mb-4" /> {/* Ícono de registro de usuario */}
+                    <FiUserPlus className="w-12 h-12 text-gray-700 mb-4" />
                     <button
                         onClick={() => navigate("/register-patient")}
                         className="px-6 py-2 bg-green-500 text-white font-bold rounded hover:bg-green-600 transition"
@@ -53,11 +62,7 @@ const Dashboard = () => {
 
             {/* Botón para cerrar sesión */}
             <button
-                onClick={() => {
-                    localStorage.removeItem("token");
-                    localStorage.removeItem("role");
-                    navigate("/login");
-                }}
+                onClick={handleLogout}
                 className="px-4 py-2 bg-blue-500 text-white rounded"
             >
                 Logout

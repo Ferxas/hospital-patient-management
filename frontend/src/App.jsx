@@ -1,5 +1,6 @@
 // src/App.jsx
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ResetPassword from './pages/ResetPassword';
@@ -13,9 +14,11 @@ import PatientDataForm from './pages/PatientDataForm';
 import PatientRecordHistory from './pages/PatientRecordHistory';
 
 
+
 function App() {
     return (
         <Router>
+            <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} />
             <Routes>
                 <Route path="/" element={<Login />} />
                 <Route path="/login" element={<Login />} />

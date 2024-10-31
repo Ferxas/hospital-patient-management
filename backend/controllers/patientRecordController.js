@@ -7,15 +7,31 @@ exports.createPatientRecord = async (req, res) => {
         pulse, temperature, respiratory_rate, oxygen_saturation, adult_weight, pediatric_weight, height, observations
     } = req.body;
 
+    // Validaciones de los valores de los datos de entrada
+    if (height > 250) {
+        return res.status(400).json({ message: "Height exceeds realistic maximum value" });
+    }
+    if (pulse > 200 || pulse < 30) {
+        return res.status(400).json({ message: "Pulse value out of range" });
+    }
+    if (respiratory_rate > 100) {
+        return res.status(400).json({ message: "Respiratory rate too high" });
+    }
+    if (oxygen_saturation > 100) {
+        return res.status(400).json({ message: "Oxygen saturation cannot exceed 100%" });
+    }
+
     try {
+        // Insertar el nuevo registro en la tabla `patient_records`
         await db.query(
             "INSERT INTO patient_records (patient_id, record_date, record_time, systolic_pressure, diastolic_pressure, mean_arterial_pressure, pulse, temperature, respiratory_rate, oxygen_saturation, adult_weight, pediatric_weight, height, observations) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             [patient_id, record_date, record_time, systolic_pressure, diastolic_pressure, mean_arterial_pressure, pulse, temperature, respiratory_rate, oxygen_saturation, adult_weight, pediatric_weight, height, observations]
         );
-        res.status(201).json({ message: "Patient record created successfully" });
+
+        res.status(201).json({ message: "Patient record created successfully and temperature updated" });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Error creating patient record" });
+        console.error("Error creating patient record:", error);
+        res.status(500).json({ message: "Error creating patient record", error: error.message });
     }
 };
 
