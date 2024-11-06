@@ -12,6 +12,7 @@ import PatientRecordForm from './pages/PatientRecordForm';
 import SearchPatient from './pages/SearchPatient';
 import PatientDataForm from './pages/PatientDataForm';
 import PatientRecordHistory from './pages/PatientRecordHistory';
+import PatientGraphs from './pages/PatientGraphs';
 
 
 
@@ -30,6 +31,7 @@ function App() {
                 {/* <Route path='/patient/:patientId/add-record' element={<PatientRecordForm />} /> */}
                 <Route path="/patient/:patientId/add-record" element={<PatientDataForm />} />´
                 <Route path="/patient/:patientId/records" element={<PatientRecordHistory />} />
+                <Route path="/patient/:patientId/graphs" element={<PatientGraphs />} />
                 <Route path="/search-patient" element={<SearchPatient />} />
                 <Route path="/admin-panel" element={<AdminPanel />} />
 
