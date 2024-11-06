@@ -40,15 +40,26 @@ const PatientRecordHistory = () => {
     };
 
     const handleFilter = () => {
-        // Aplica el filtro de fechas y actualiza `filteredRecords`
+        // Aplica el filtro de fechas
         const filtered = records.filter(record => {
             const recordDate = new Date(record.record_date);
             const start = startDate ? new Date(startDate) : null;
             const end = endDate ? new Date(endDate) : null;
             return (!start || recordDate >= start) && (!end || recordDate <= end);
         });
-        setFilteredRecords(filtered);
+    
+        // Filtra las variables seleccionadas
+        const filteredWithVariables = filtered.map(record => {
+            const filteredRecord = {};
+            selectedVariables.forEach(variable => {
+                filteredRecord[variable] = record[variable];
+            });
+            return { ...record, ...filteredRecord };
+        });
+    
+        setFilteredRecords(filteredWithVariables);
     };
+    
 
     const toggleVariable = (variable) => {
         setSelectedVariables(prev => 

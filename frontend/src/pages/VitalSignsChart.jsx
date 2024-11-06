@@ -5,7 +5,7 @@ import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-const VitalSignsChart = ({ records }) => {
+const VitalSignsChart = ({ records, selectedVariables }) => {
     const getLabels = () => records.map(record => record.record_date);
 
     const createDataset = (label, dataKey, color) => ({
@@ -17,16 +17,20 @@ const VitalSignsChart = ({ records }) => {
         fill: false,
     });
 
+    const colors = {
+        pulse: 'rgb(255, 99, 132)',
+        temperature: 'rgb(54, 162, 235)',
+        respiratory_rate: 'rgb(75, 192, 192)',
+        systolic_pressure: 'rgb(153, 102, 255)',
+        diastolic_pressure: 'rgb(255, 159, 64)',
+        oxygen_saturation: 'rgb(201, 203, 207)',
+    };
+
     const data = {
         labels: getLabels(),
-        datasets: [
-            createDataset('Pulso (lpm)', 'pulse', 'rgb(255, 99, 132)'),
-            createDataset('Temperatura (°C)', 'temperature', 'rgb(54, 162, 235)'),
-            createDataset('Frecuencia Respiratoria (resp/min)', 'respiratory_rate', 'rgb(75, 192, 192)'),
-            createDataset('TAS (mmHg)', 'systolic_pressure', 'rgb(153, 102, 255)'),
-            createDataset('TAD (mmHg)', 'diastolic_pressure', 'rgb(255, 159, 64)'),
-            createDataset('SatO2 (%)', 'oxygen_saturation', 'rgb(201, 203, 207)'),
-        ],
+        datasets: selectedVariables.map(variable =>
+            createDataset(variable, variable, colors[variable])
+        ),
     };
 
     const options = {
@@ -43,5 +47,6 @@ const VitalSignsChart = ({ records }) => {
 
     return <Line data={data} options={options} />;
 };
+
 
 export default VitalSignsChart;
