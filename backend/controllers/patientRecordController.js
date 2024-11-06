@@ -11,15 +11,15 @@ exports.createPatientRecord = async (req, res) => {
     if (height > 250) {
         return res.status(400).json({ message: "Height exceeds realistic maximum value" });
     }
-    if (pulse > 200 || pulse < 30) {
-        return res.status(400).json({ message: "Pulse value out of range" });
-    }
+    // if (pulse > 200 || pulse < 30) {
+    //     return res.status(400).json({ message: "Pulse value out of range" });
+    // }
     if (respiratory_rate > 100) {
         return res.status(400).json({ message: "Respiratory rate too high" });
     }
-    if (oxygen_saturation > 100) {
-        return res.status(400).json({ message: "Oxygen saturation cannot exceed 100%" });
-    }
+    // if (oxygen_saturation > 100) {
+    //     return res.status(400).json({ message: "Oxygen saturation cannot exceed 100%" });
+    // }
 
     try {
         // Insertar el nuevo registro en la tabla `patient_records`
