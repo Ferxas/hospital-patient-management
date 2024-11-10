@@ -28,7 +28,7 @@ const AdminPanel = () => {
             const response = await getUsers();
             setUsers(response.data);
         } catch (error) {
-            setError("Failed to fetch users");
+            setError("Failed to fetch users", error);
         }
     };
 
@@ -41,7 +41,7 @@ const AdminPanel = () => {
                 )
             );
         } catch (error) {
-            setError("Failed to update user role");
+            setError("Failed to update user role", error);
         }
     };
 
@@ -54,7 +54,7 @@ const AdminPanel = () => {
                 )
             );
         } catch (error) {
-            setError("Failed to update user status");
+            setError("Failed to update user status", error);
         }
     };
 
@@ -75,8 +75,8 @@ const AdminPanel = () => {
             setConfirmPassword("");
             setRole("user");
             fetchUsers(); // Actualizar la lista de usuarios
-        } catch (err) {
-            setError("Registration failed. Please try again.");
+        } catch (error) {
+            setError("Registration failed. Please try again.", error);
             setSuccess(null);
         }
     };

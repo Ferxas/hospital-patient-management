@@ -8,11 +8,12 @@ import ChangePassword from './pages/ChangePassword';
 import Dashboard from './pages/Dashboard';
 import AdminPanel from './pages/AdminPanel';
 import PatientRegister from './pages/PatientRegister';
-import PatientRecordForm from './pages/PatientRecordForm';
+// import PatientRecordForm from './pages/PatientRecordForm';
 import SearchPatient from './pages/SearchPatient';
 import PatientDataForm from './pages/PatientDataForm';
 import PatientRecordHistory from './pages/PatientRecordHistory';
 import PatientGraphs from './pages/PatientGraphs';
+import Layout from './components/Layout';
 
 
 
@@ -23,21 +24,18 @@ function App() {
             <Routes>
                 <Route path="/" element={<Login />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} /> {/* ruta de registro temporalmente para facilitar la creación del admin */}
-                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/register" element={<Register />} />
                 <Route path="/reset-password/:token" element={<ChangePassword />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/register-patient" element={<PatientRegister />} />
-                {/* <Route path='/patient/:patientId/add-record' element={<PatientRecordForm />} /> */}
-                <Route path="/patient/:patientId/add-record" element={<PatientDataForm />} />´
-                <Route path="/patient/:patientId/records" element={<PatientRecordHistory />} />
-                <Route path="/patient/:patientId/graphs" element={<PatientGraphs />} />
-                <Route path="/search-patient" element={<SearchPatient />} />
-                <Route path="/admin-panel" element={<AdminPanel />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
+                <Route path="/register-patient" element={<Layout><PatientRegister /></Layout>} />
+                <Route path="/patient/:patientId/add-record" element={<Layout><PatientDataForm /></Layout>} />
+                <Route path="/patient/:patientId/records" element={<Layout><PatientRecordHistory /></Layout>} />
+                <Route path="/patient/:patientId/graphs" element={<Layout><PatientGraphs /></Layout>} />
+                <Route path="/search-patient" element={<Layout><SearchPatient /></Layout>} />
+                <Route path="/admin-panel" element={<Layout><AdminPanel /></Layout>} />
 
-                {/* Default route */}
                 <Route path="*" element={<h1>404 Page Not Found</h1>} />
-
             </Routes>
         </Router>
     );

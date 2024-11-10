@@ -1,12 +1,16 @@
 // routes/authRoutes.js
 const express = require('express');
-const { login, resetPassword, updatePassword, register } = require('../controllers/authController');
 const router = express.Router();
+const authController = require('../controllers/authController');
+const authMiddleware = require('../middleware/authMiddleware');
 
-router.post('/login', login); // ruta para login
-router.post('/reset-password', resetPassword); // ruta para resetear la contraseña
-router.post('/register', register);  // Ruta para el registro
+// Rutas públicas
+router.post('/login', authController.login);
+router.post('/register', authController.register);
+router.post('/reset-password', authController.resetPassword);
+router.patch('/reset-password/:token', authController.updatePassword);
 
-router.patch('/reset-password/:token', updatePassword); // ruta para resetear la contraseña usando el token
+// Rutas protegidas
+router.get('/user-info', authMiddleware, authController.getUserInfo);
 
 module.exports = router;

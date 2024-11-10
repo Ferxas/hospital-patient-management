@@ -9,8 +9,17 @@ export const login = async (username, password) => {
 };
 
 // Función de registro de usuario
-export const register = async (username, password, email, role) => {
-    return await axios.post(`${API_URL}/auth/register`, { username, password, email, role });
+export const register = async (formData) => {
+    try {
+        const response = await axios.post(`${API_URL}/auth/register`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
 };
 
 // Función para solicitar restablecimiento de contraseña
@@ -36,4 +45,13 @@ export const updateUserRole = async (id, role) => {
 // Función para habilitar/inhibir un usuario
 export const toggleUserStatus = async (id, isActive) => {
     return await axios.patch(`${API_URL}/users/${id}/status`, { is_active: isActive });
+};
+
+// Función para obtener la información del usuario
+export const getUserInfo = async () => {
+    return await axios.get(`${API_URL}/auth/user-info`, {
+        headers: {  
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+    });
 };

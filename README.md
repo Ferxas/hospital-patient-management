@@ -57,6 +57,8 @@ To get started with the Hospital Patient Management System, follow these steps:
    ```bash
    npm start
    ```
+<!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
+
 
 6. **Install Frontend Dependencies**:
    Navigate to the frontend directory and install the required packages:

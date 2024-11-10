@@ -8,6 +8,7 @@ const patientRecordRoutes = require('./routes/patientRecordRoutes');
 
 
 const app = express();
+app.use('/uploads', express.static('uploads'));
 app.use(cors());
 app.use(express.json());
 

@@ -4,33 +4,80 @@ const transporter = require('../config/nodemailer');
 const crypto = require('crypto');
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
+const multer = require('multer');
+const path = require('path');
+const db = require('../config/db');
+
+// Configuración de multer para el almacenamiento de imágenes
+const storage = multer.diskStorage({
+    destination: 'uploads/profile-images/',
+    filename: function(req, file, cb) {
+        // Crear un nombre único para la imagen: timestamp-username.extension
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, 'profile-' + uniqueSuffix + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({ 
+    storage: storage,
+    limits: {
+        fileSize: 5 * 1024 * 1024 // Límite de 5MB
+    },
+    fileFilter: function(req, file, cb) {
+        const filetypes = /jpeg|jpg|png/;
+        const mimetype = filetypes.test(file.mimetype);
+        const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+
+        if (mimetype && extname) {
+            return cb(null, true);
+        }
+        cb(new Error('Error: Solo se permiten archivos de imagen!'));
+    }
+});
 
 // Función de registro de usuario con correo de bienvenida
 exports.register = async (req, res) => {
-    const { username, password, email, role } = req.body;
-
     try {
-        // Verificar si el usuario o el correo ya existen
-        const existingUser = await User.findByUsername(username);
-        const existingEmail = await User.findByEmail(email);
+        upload.single('profileImage')(req, res, async function(err) {
+            if (err) {
+                return res.status(400).json({ message: err.message });
+            }
 
-        if (existingUser) return res.status(400).json({ message: "Username already taken" });
-        if (existingEmail) return res.status(400).json({ message: "Email already in use" });
+            const { username, password, email, role } = req.body;
+            const profileImage = req.file ? req.file.filename : null;
 
-        // Crear el nuevo usuario
-        const userId = await User.createUser({ username, password, email, role });
+            // Verificar si el usuario o el correo ya existen
+            const existingUser = await User.findByUsername(username);
+            const existingEmail = await User.findByEmail(email);
 
-        // Enviar correo de bienvenida
-        await transporter.sendMail({
-            from: process.env.EMAIL_USER,
-            to: email,
-            subject: "Welcome to the Hospital Patient Management System",
-            html: `<p>Hello ${username},</p>
-                   <p>Welcome! Your account has been successfully created with the role of ${role}.</p>
-                   <p>Thank you for registering with us.</p>`
+            if (existingUser) return res.status(400).json({ message: "Username already taken" });
+            if (existingEmail) return res.status(400).json({ message: "Email already in use" });
+
+            // Crear el nuevo usuario con la imagen de perfil
+            const userId = await User.createUser({ 
+                username, 
+                password, 
+                email, 
+                role,
+                profile_image: profileImage 
+            });
+
+            // Enviar correo de bienvenida
+            await transporter.sendMail({
+                from: process.env.EMAIL_USER,
+                to: email,
+                subject: "Welcome to the Hospital Patient Management System",
+                html: `<p>Hello ${username},</p>
+                       <p>Welcome! Your account has been successfully created with the role of ${role}.</p>
+                       <p>Thank you for registering with us.</p>`
+            });
+
+            res.status(201).json({ 
+                message: "User registered successfully, welcome email sent", 
+                userId,
+                profileImage 
+            });
         });
-
-        res.status(201).json({ message: "User registered successfully, welcome email sent", userId });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Server error" });
@@ -39,24 +86,43 @@ exports.register = async (req, res) => {
 
 // Función de inicio de sesión
 exports.login = async (req, res) => {
-    const { username, password } = req.body;
-
     try {
-        const user = await User.findByUsername(username);
-        if (!user) return res.status(404).json({ message: "User not found" });
+        const { username, password } = req.body;
 
-        if (!user.is_active) {
-            return res.status(403).json({ message: "User is disabled. Contact the administrator." });
+        const [rows] = await db.query(
+            "SELECT id, username, password, role FROM users WHERE username = ?",
+            [username]
+        );
+
+        if (rows.length === 0) {
+            return res.status(401).json({ message: "Invalid credentials" });
         }
 
-        const validPassword = await bcrypt.compare(password, user.password);
-        if (!validPassword) return res.status(401).json({ message: "Incorrect password" });
+        const user = rows[0];
+        const isValidPassword = await bcrypt.compare(password, user.password);
 
-        const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        if (!isValidPassword) {
+            return res.status(401).json({ message: "Invalid credentials" });
+        }
 
-        res.status(200).json({ token, role: user.role });
+        // Crear token incluyendo el id del usuario
+        const token = jwt.sign(
+            { 
+                id: user.id,
+                username: user.username,
+                role: user.role 
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: '24h' }
+        );
+
+        res.json({
+            token,
+            role: user.role,
+            username: user.username
+        });
     } catch (error) {
-        console.error(error);
+        console.error('Login error:', error);
         res.status(500).json({ message: "Server error" });
     }
 };
@@ -119,5 +185,27 @@ exports.updatePassword = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Server error" });
+    }
+};
+
+
+exports.getUserInfo = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        
+        const [rows] = await db.query(
+            "SELECT id, username, email, role, profile_image FROM users WHERE id = ?",
+            [userId]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const user = rows[0];
+        res.json(user);
+    } catch (error) {
+        console.error('Error in getUserInfo:', error);
+        res.status(500).json({ message: "Server error", error: error.message });
     }
 };
