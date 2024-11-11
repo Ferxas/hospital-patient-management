@@ -57,8 +57,6 @@ To get started with the Hospital Patient Management System, follow these steps:
    ```bash
    npm start
    ```
-<!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
-
 
 6. **Install Frontend Dependencies**:
    Navigate to the frontend directory and install the required packages:
@@ -75,17 +73,89 @@ To get started with the Hospital Patient Management System, follow these steps:
 8. **Access the Application**:
    Open your browser and go to `http://localhost:5173` to access the application.
 
+## 📦 Deployment on Vercel
+
+To deploy this application on Vercel, follow these steps:
+
+### Backend Deployment
+
+1. **Install Vercel CLI**:
+   ```bash
+   npm install -g vercel
+   ```
+
+2. **Configure Environment Variables**:
+   Make sure you have the following environment variables ready:
+   - `DB_HOST`: Your database host
+   - `DB_USER`: Database username
+   - `DB_PASSWORD`: Database password
+   - `DB_NAME`: Database name
+   - `JWT_SECRET`: Secret key for JWT
+   - `EMAIL_USER`: Email for notifications
+   - `EMAIL_PASS`: Email password
+
+3. **Deploy Backend**:
+   ```bash
+   cd backend
+   vercel login
+   vercel env add DB_HOST
+   vercel env add DB_USER
+   vercel env add DB_PASSWORD
+   vercel env add DB_NAME
+   vercel env add JWT_SECRET
+   vercel env add EMAIL_USER
+   vercel env add EMAIL_PASS
+   vercel --prod
+   ```
+
+### Frontend Deployment
+
+1. **Configure API URL**:
+   After deploying the backend, update the frontend environment variable:
+   ```bash
+   cd frontend
+   ```
+
+2. **Create or update `.env` file**:
+   ```
+   VITE_API_URL=https://your-backend-url.vercel.app/api
+   ```
+
+3. **Deploy Frontend**:
+   ```bash
+   vercel login
+   vercel env add VITE_API_URL
+   vercel --prod
+   ```
+
+### Required Configuration Files
+
+For proper deployment, the following configuration files are included in the project:
+
+1. **Backend Configuration**: 
+   - Location: `backend/vercel.json`
+   - Purpose: Configures the Node.js server deployment and environment variables
+
+2. **Frontend Configuration**: 
+   - Location: `frontend/vercel.json`
+   - Purpose: Sets up the Vite application deployment and routing
+
+3. **Deployment Scripts**: 
+   - Backend Script: `backend/scripts/vercelDeploy.sh`
+   - Frontend Script: `frontend/scripts/vercelDeploy.sh`
+   - Purpose: Automate the deployment process for both applications
+
+These files are already configured and ready to use. Just follow the deployment steps above to use them.
+
+Note: Make sure all changes are committed before deploying.
+
 ## 📝 To-Do List
 
-- [ ] Variable alarm system.
-- [ ] Generate graphs.
-- [ ] Enhance the UI/UX for better user experience.
+- [x] Variable alarm system.
+- [x] Generate graphs.
+- [x] Enhance the UI/UX for better user experience.
 - [ ] Write unit tests for critical components.
-- [ ] Deploy the application to a cloud service (e.g., Heroku, AWS, Vercel).
-
-<!-- ## 🎨 Contributing
-
-Contributions are welcome! If you have suggestions or improvements, feel free to open an issue or submit a pull request. -->
+- [x] Deploy the application to a cloud service (e.g., Heroku, AWS, Vercel).
 
 ---
 

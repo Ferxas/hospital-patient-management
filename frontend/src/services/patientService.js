@@ -1,7 +1,8 @@
 // src/services/patientService.js
 import axios from 'axios';
 
-const API_URL = "http://localhost:5000/api";
+// Modificar la URL base para que use variables de entorno
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 export const registerPatient = async (patientData) => {
     return await axios.post(`${API_URL}/patients`, patientData);
